@@ -1,0 +1,22 @@
+# Determine if there are duplicates
+duplicated(all_trips2021)  
+
+# Work around I coded to perform data cleaning steps 
+# Create a new dataframe with all rides that start at HQ QR removed
+all_trips2021_v2 <- subset(all_trips2021, start_station_name!="HQ QR")
+
+# Create a new dataframe with all rides <o removed  
+all_trips2021_v3 <- all_trips2021_v2[!(all_trips2021_v2$ride_length<0),]
+
+# Extra Calculation to determine average ride time for each month by user type
+aggregate(all_trips2021_v3$ride_length ~ all_trips2021_v3$member_casual + all_trips2021_v3$month, FUN = mean)
+
+# Extra Calculation to determine number of rides per month by user type 
+all_trips2021_v3 %>% group_by(month,member_casual) %>% summarise(frequency = n())
+
+# Export data 
+countsbymonthandgroup <- all_trips2021_v3 %>% group_by(month,member_casual) %>% summarise(frequency = n())
+write.csv(countsbymonthandgroup, file = '~/Desktop/CAPSTONE/totalridespermonthbygroup.csv')
+
+
+
